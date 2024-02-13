@@ -1,11 +1,11 @@
 # Linkedin_DataAnalysis
 Goal:
 
-Giving Linkedin users a comprehansive insights and visualizations on thier network (connections)
+Providing LinkedIn users a comprehensive insights and visualizations on their network (connections)
 
 Description:
 
-this project perform exploratory data analysis on LinkedIn connection data.
+this project performs exploratory data analysis on LinkedIn connection data.
 It loads the data, cleans it, calculates summary statistics, 
 visualizes the data through plots and graphs, and allows the user
 to filter and analyze subsets of data.
