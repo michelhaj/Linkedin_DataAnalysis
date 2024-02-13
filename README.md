@@ -23,13 +23,13 @@ Key functions and features:
 
 How to use:
   1- you will need your LinkedIn Connections CSV file which can be downloaded by following these steps:
-    1.1- Click the Me icon at the top of your LinkedIn homepage on the desktop browser.
-    1.2- Select Settings & Privacy from the dropdown.
-    1.3- Click Data privacy on the left pane.
-    1.4- Under the How LinkedIn uses your data section, click Get a copy of your data.
-    1.5- Select Want something in particular? ...
-    1.6- Select Connections.
-    Note: the connections CSV file might take up to 10 minutes to be ready after requesting it using the steps above; you must refresh the linkedIn browser in order for the download button to appear after waiting.
+   - Click the Me icon at the top of your LinkedIn homepage on the desktop browser.
+   - Select Settings & Privacy from the dropdown.
+   - Click Data privacy on the left pane.
+   - Under the How LinkedIn uses your data section, click Get a copy of your data.
+   - Select Want something in particular? ...
+   - Select Connections.
+Note: the connections CSV file might take up to 10 minutes to be ready after requesting it using the steps above; you must refresh the LinkedIn browser for the download button to appear after waiting.
 2- upload the connections.csv file to the streamlit web app 
 
 Congrats :partying_face: Now you are ready to go and see the exciting graphs and visuals
