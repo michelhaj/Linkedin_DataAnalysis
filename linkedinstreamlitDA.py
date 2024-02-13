@@ -25,7 +25,7 @@ if uploaded_file is not None:
 
     
 else:
-    df=pd.read_csv("connections_base.csv",skiprows=3)
+    df=pd.read_csv("Connections_base.csv",skiprows=3)
     
 
 df.columns=df.columns.str.replace(" ","_").str.lower()
