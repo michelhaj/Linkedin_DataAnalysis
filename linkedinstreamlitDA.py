@@ -62,7 +62,7 @@ if selected == "Instructions":
 ###### Note: the connections CSV file might take up to 10 minutes to be ready after requesting it using the steps above; you must refresh the LinkedIn browser for the download button to appear after waiting.
 ##### Congrats :partying_face: Now you are ready to go and see the exciting graphs and visuals
     
- ### This site can be accessed using [GithubLink](https://github.com/michelhaj/Linkedin_DataAnalysis) """)
+ ### This site can be accessed using [Github Link](https://github.com/michelhaj/Linkedin_DataAnalysis) """)
 
 if selected == "Dashboard":
 
