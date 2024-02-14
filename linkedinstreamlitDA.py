@@ -62,7 +62,10 @@ if selected == "Instructions":
 ###### Note: the connections CSV file might take up to 10 minutes to be ready after requesting it using the steps above; you must refresh the LinkedIn browser for the download button to appear after waiting.
 ##### Congrats :partying_face: Now you are ready to go and see the exciting graphs and visuals
     
- ### This site's code can be accessed using [Github Link](https://github.com/michelhaj/Linkedin_DataAnalysis) """)
+ ### This site's code can be accessed using [Github Link](https://github.com/michelhaj/Linkedin_DataAnalysis)
+##### Created by Michel Al-haj """)
+    
+
 
 if selected == "Dashboard":
 
@@ -133,45 +136,49 @@ if selected == "Dashboard":
 
     with col1:
         print(filtered_df.groupby(by="connected_on").count().reset_index())
-        st.subheader("Connections count by date")
+        st.subheader("Connections Count by Date")
         fig=px.bar(filtered_df.groupby(by="connected_on").count().reset_index(),x="connected_on",y="position",labels={'position':'count'})
         st.plotly_chart(fig,use_container_width=True,height=400)
     filtered_df["month_name"]=filtered_df.connected_on.dt.month_name()
     with col2:
-        st.subheader("Connections count by month")
+        st.subheader("Connections Count by Month")
         fig=px.bar(filtered_df.groupby(by="month_name").count().reset_index().sort_values(by="connected_on",ascending=False),template="gridon",x="month_name",y="position",color="month_name",labels={'position':'count'})
         st.plotly_chart(fig,use_container_width=True,height=300)
-
+    # def comp_count_func():
+        
     cl1,cl2=st.columns(2)
-    top_companies=filtered_df.groupby(by="company").count().reset_index().sort_values(by="connected_on",ascending=False).reset_index(drop=True)
+    top_companies=(filtered_df.merge(filtered_df.company.value_counts(),on="company").sort_values(by="count",ascending=False).reset_index(drop=True))
+    top_companies["occurences"]=1
+    top_companies["used_in_treemap_company"]=top_companies.apply(lambda x: 1 if  x.company in top_companies.company.values[:len(top_companies.company.values)//5] else 0,axis=1)
+    top_companies=top_companies[top_companies.used_in_treemap_company==1]
+    # top_companies=filtered_df.groupby(by=["company",'position']).count().reset_index().sort_values(by="company",ascending=False).reset_index(drop=True)
     top_positions=filtered_df.groupby(by="position").count().reset_index().sort_values(by="connected_on",ascending=False).reset_index(drop=True)
     with cl1:
-        st.subheader("Top Companies / Organizations in my network")
+        st.subheader("Top Companies / Organizations in your Network")
         if len(top_companies)<5:
-            st.write("no enough data to show")
+            st.write("No enough data to show")
         else:
-            fig=px.treemap(top_companies[:(len(top_companies)//6)],path=["company","position"], values="position",template="ggplot2")
+            fig=px.treemap(top_companies,path=["company","position","first_name"],values="occurences")#, values="connected_on",template="ggplot2",labels={"connected_on":"count"})
             st.plotly_chart(fig,use_container_width=True,height=300)
-
+            pass
     with cl2:
         
-        st.subheader("Top Positions in my network")
+        st.subheader("Top Positions in Your Network")
         if len(top_positions)<5:
-            st.write("no enough data to show")
+            st.write("No enough data to show")
         else:
-            fig=px.treemap(top_positions[:(len(top_positions)//6)],path=["position","company"], values="company",template="ggplot2",labels={"month_name":"count"})
+            fig=px.treemap(top_positions[:(len(top_positions)//6)],path=["position","company"], values="company",template="ggplot2",labels={"company":"count"})
             st.plotly_chart(fig,use_container_width=True,height=300)
 
-    import plotly.figure_factory as ff
-    st.subheader("First 5 Rows of the Data")  
-    with st.expander("Summery_Table"):
-        df_sample=filtered_df[0:5].drop(columns=["url"])
-        fig=ff.create_table(df_sample)
-        st.plotly_chart(fig,use_container_width=True,height=300)                                                               
+    # import plotly.figure_factory as ff
+    st.subheader("Connections  Data Table")  
+    with st.expander("Data_Table"):
+        df_sample=filtered_df.drop(columns=["url"])
+        st.write(df_sample)                                                          
     wc1,wc2=st.columns(2)
 
     with wc1:
-        st.subheader(f"Most frequent names in my network based on filter" )
+        st.subheader(f"Most Frequent Names in Your Network" )
         x=' '.join(filtered_df.first_name.to_list())
         stopwords=STOPWORDS
         wc=WordCloud(background_color='white',stopwords=stopwords,height=1000,width=1500)
@@ -185,7 +192,7 @@ if selected == "Dashboard":
     filtered_df["full_name"]=filtered_df.first_name+" "+filtered_df.last_name
     print(set([(i,j)for i, j in filtered_df[filtered_df.company=="PwC"][['full_name',"position"]].values]))
     with wc2:
-        st.subheader(f"Most frequent names and positions in my network by compny" )
+        st.subheader(f"Most Frequent Names and Positions in Your Network by Compny" )
         g=nx.Graph()
         g.add_node("root")
         for _,row in filtered_top_companies.iterrows():
@@ -205,7 +212,7 @@ if selected == "Dashboard":
         source_code = HtmlFile.read() 
         components.html(source_code,width=600,height=500)
     import plotly.graph_objects as go
-    st.subheader("Connection's Age")
+    st.subheader("Recency of Connections")
     filtered_df["connection_age"]=(pd.to_datetime("today")-filtered_df.connected_on).dt.days
     ages_in_days=filtered_df.connection_age.values
     labels=[]
