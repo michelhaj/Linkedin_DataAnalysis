@@ -15,6 +15,7 @@ Key functions and features:
   - Visualizations: bar charts, treemaps, wordclouds, network graph
   - Downloading filtered data as CSV
 """
+import statsmodels.api as sm
 from streamlit_option_menu import option_menu
 import streamlit as st
 import pandas as pd
@@ -27,6 +28,7 @@ from pyvis import network as net
 import streamlit.components.v1 as components
 warnings.filterwarnings("ignore")
 import os
+st.set_page_config(layout="wide")
 selected = option_menu(
             menu_title=None,  # required
             options=["Instructions" ,"Dashboard"],  # required
@@ -68,6 +70,7 @@ if selected == "Instructions":
 
 
 if selected == "Dashboard":
+   
 
     # st.title(":bar_chart: LinkedIn Network Data Analysis")
     # st.markdown('<style>div.block-container{padding-top:1rem}</style>',unsafe_allow_html=True)
@@ -137,12 +140,13 @@ if selected == "Dashboard":
     with col1:
         print(filtered_df.groupby(by="connected_on").count().reset_index())
         st.subheader("Connections Count by Date")
-        fig=px.bar(filtered_df.groupby(by="connected_on").count().reset_index(),x="connected_on",y="position",labels={'position':'count'})
+        fig=px.scatter (filtered_df.groupby(by="connected_on").count().reset_index(),x="connected_on",y="position",marginal_y="violin",
+           marginal_x="box", trendline="ols",color="position",labels={'position':'connection\'s number'},template="plotly")
         st.plotly_chart(fig,use_container_width=True,height=400)
     filtered_df["month_name"]=filtered_df.connected_on.dt.month_name()
     with col2:
         st.subheader("Connections Count by Month")
-        fig=px.bar(filtered_df.groupby(by="month_name").count().reset_index().sort_values(by="connected_on",ascending=False),template="gridon",x="month_name",y="position",color="month_name",labels={'position':'count'})
+        fig=px.bar(filtered_df.groupby(by="month_name").count().reset_index().sort_values(by="connected_on",ascending=False),template="plotly",x="month_name",y="position",text="position",color="month_name",labels={'position':'connection\'s number'})
         st.plotly_chart(fig,use_container_width=True,height=300)
     # def comp_count_func():
         
@@ -158,7 +162,7 @@ if selected == "Dashboard":
         if len(top_companies)<5:
             st.write("No enough data to show")
         else:
-            fig=px.treemap(top_companies,path=["company","position","first_name"],values="occurences")#, values="connected_on",template="ggplot2",labels={"connected_on":"count"})
+            fig=px.treemap(top_companies,path=["company","position","first_name"],values="occurences",template="plotly")#, values="connected_on",template="ggplot2",labels={"connected_on":"count"})
             st.plotly_chart(fig,use_container_width=True,height=300)
             pass
     with cl2:
@@ -167,7 +171,7 @@ if selected == "Dashboard":
         if len(top_positions)<5:
             st.write("No enough data to show")
         else:
-            fig=px.treemap(top_positions[:(len(top_positions)//6)],path=["position","company"], values="company",template="ggplot2",labels={"company":"count"})
+            fig=px.treemap(top_positions[:(len(top_positions)//6)],path=["position","company"], values="company",template="plotly",labels={"company":"count"})
             st.plotly_chart(fig,use_container_width=True,height=300)
 
     # import plotly.figure_factory as ff
@@ -234,15 +238,22 @@ if selected == "Dashboard":
         text=labels,
         marker=dict(
             size=7,
-            color='blue'
-        )
-    ))
+            color=ages_in_days,
+        )))
+    
 
     # Customize layout if needed
     fig.update_layout(
         xaxis=dict(title='Full Name of Connections'),
-        yaxis=dict(title='Age (days)')
+        yaxis=dict(title='Age (days)'),
+
+    hoverlabel=dict(
+        bgcolor="blue",
+        font_size=16,
+        font_family="Rockwell"
     )
+)
+    
 
     # filtered_df["connection_age"]=filtered_df["connection_age"].apply(lambda x: x//365 if x>=365 else x//30)
     # fig=px.scatter(filtered_df,x="full_name",y="connection_age",labels={'connection_age':'days',"full_name":"name"})
